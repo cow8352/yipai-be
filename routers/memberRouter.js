@@ -35,20 +35,42 @@ router.get("/sellerProduct",checkLogin, async (req, res, next) => { let [data] =
 // GET 賣家訂單 /api/members/sellerOrder 
 router.get("/sellerOrder",checkLogin, async (req, res, next) => { let [data] = await pool.query("SELECT * FROM user_order "); res.json(data); });
 
-// PUT /api/members
-router.put("/",checkLogin, async (req, res, next) => {
-  // console.log("/users/:usersId TO upload ", req.params.usersId);
-  let [data] = await pool.query(
+// PUT /api/members/userData
+router.put("/userData", async (req, res, next) => {
+  
+  let data = await pool.query(
       "UPDATE users SET users_name = ? , users_account = ? , users_email = ? ,users_phone = ? WHERE users_id = ?",
       [
           req.body.username,
           req.body.account,
           req.body.email,
           req.body.phone,
+          // req.body.photo,//上傳檔案名稱
           req.body.usersId,
       ]
   );
-  console.log(req.body);
+  console.log(data);
+  console.log("/users/:usersId TO upload ", req);
+
+  // res.json(data);
+});
+
+// PUT /api/members/userAdd
+router.put("/userAdd", async (req, res, next) => {
+  
+  let data = await pool.query(
+      "UPDATE users SET users_city = ? , users_township = ? ,users_street = ?  WHERE users_id = ?",
+      [
+          req.body.city,
+          req.body.township,
+          req.body.rode,
+          // req.body.photo,//上傳檔案名稱
+          req.body.usersId,
+      ]
+  );
+  console.log(data);
+  console.log("Add TO upload ", req.body);
+
   res.json(data);
 });
 module.exports = router;

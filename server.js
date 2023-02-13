@@ -86,6 +86,19 @@ app.get("/product", async (req, res, next) => {
     let [data] = await pool.query("SELECT * FROM product");
     res.json(data);
 });
+app.put("/product/:productId", async (req, res, next) => {
+    console.log("這裡是 put/product/ID", req.params.productId);
+    let [data] = await pool.query(
+        `UPDATE product SET name = ? , price = ? WHERE id = ?`,
+        [
+            req.body.name,
+            req.body.price,
+            req.body.id,
+        ]
+    );
+    console.log(req.body);
+    res.json(data);
+});
 
 
 
