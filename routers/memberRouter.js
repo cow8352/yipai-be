@@ -63,8 +63,8 @@ router.put("/userData", async (req, res, next) => {
           req.body.usersId,
       ]
   );
-  console.log(data);
-  console.log("/users/:usersId TO upload ", req);
+  console.log(req.body);
+  console.log("/users/:usersId TO upload ", req.body);
 
   // res.json(data);
 });
