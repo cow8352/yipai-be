@@ -295,6 +295,88 @@ app.get('/coupon', async (req, res, next) => {
     next()
   })
 
+
+///---------------------------------------------------
+//userCoupon
+app.get('/userCoupon', async (req, res,next) => {
+    console.log('這裡是 /coupon')
+    
+    if(!req.session.member){
+      res.json();
+    }else{
+      let [data] = await pool.query(
+      'SELECT * FROM coupon WHERE user_id=?', [req.session.member.users_id]);
+    res.json(data);}
+    
+  })
+
+//coupon Total
+  app.get('/couponTotal', async (req, res,next) => {
+    console.log('這裡是 /couponTotal')
+    if(!req.session.member){
+        res.json();
+    }else{
+        let [data] = await pool.query(
+            'SELECT COUNT(user_id) AS total FROM coupon WHERE user_id=?', [req.session.member.users_id]);
+          res.json(data);
+    }
+  })
+
+//user like  
+app.get('/userlike', async (req, res,next) => {
+    console.log('這裡是 /userlike')
+    console.log('********************',req.session.member)
+    if(!req.session.member){
+        res.json();
+    }else{
+        let [data] = await pool.query(
+            'SELECT user_like.*, product.img_file, product.name, product.width, product.height, product.price FROM user_like JOIN product ON user_like.product_id = product.id  WHERE user_id=?', [req.session.member.users_id]);
+          res.json(data);
+        }
+    
+  })
+
+//產品加入收藏
+app.post('/users/user_like_add', async (req, res, next) => {
+    // 存到資料庫
+    if (!req.session.member.users_id) {
+      res.json([])
+    } else {
+      let result = await pool.execute(
+        'INSERT INTO user_like ( product_id, user_id) VALUES ( ?, ?)',
+        [req.body.product_id, req.session.member.users_id ])
+  
+      console.log('加入收藏', req.body.product_id)
+      // 回覆給前端
+      res.json({
+        msg: '加入收藏',
+      })
+    }
+  })
+  app.post('/users/coupon/:coupon', async (req, res, next) => {
+    // 存到資料庫
+   console.log(req.params.coupon)
+  })
+  //產品取消收藏
+  app.delete('/user_like_delete/:productId', async (req, res, next) => {
+    console.log('------------------',req.session.member.users_id, req.params.productId)
+    // 存到資料庫
+    if (!req.session.member.users_id) {
+      res.json([])
+    } else {
+        await pool.execute(
+        'DELETE FROM user_like WHERE product_id = ? AND user_id = ?',
+        [req.params.productId, req.session.member.users_id ]
+      )
+  
+      // 回覆給前端
+      res.json({
+        msg: '取消收藏',
+      })
+    }
+  })
+
+
 app.use((req, res, next) => {
     console.log("出現404！");
     res.status(404).send("錯誤代號404，請輸入正確的網址");
@@ -305,3 +387,5 @@ app.use((req, res, next) => {
 app.listen(3001, () => {
     console.log("Server running at port 3001");
 });
+
+
