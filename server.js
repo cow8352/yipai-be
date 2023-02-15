@@ -64,7 +64,6 @@ app.get('/users/checkusers', async (req, res, next) => {
 // 首頁
 app.get("/", async (req, res, next) => {
     console.log("這裡是藝拍首頁,顯示首頁資料");
-    console.log('---------------------51',req.session.member)
     let [data] = await pool.query(
         "SELECT * FROM users JOIN user_order ON users.users_id = user_order.user_id JOIN product ON product.id = user_order.product_id LIMIT 1"
     );
@@ -130,15 +129,13 @@ app.get('/coupon', async (req, res,next) => {
   })
 
 //user like  
-app.get('/userlike', async (req, res,next) => {
+app.get('/userlike/:userId', async (req, res,next) => {
     console.log('這裡是 /userlike')
-    if(!req.session.member){
-        res.json();
-    }else{
+
         let [data] = await pool.query(
-            'SELECT user_like.*, product.img_file, product.name, product.width, product.height, product.price FROM user_like JOIN product ON user_like.product_id = product.id  WHERE user_id=?', [req.session.member.users_id]);
+            'SELECT user_like.*, product.img_file, product.name, product.width, product.height, product.price FROM user_like JOIN product ON user_like.product_id = product.id  WHERE user_id=?', [req.params.userId]);
           res.json(data);
-    }
+    
   })
 
 //產品加入收藏
@@ -161,15 +158,15 @@ app.post('/users/user_like_add', async (req, res, next) => {
   })
   
   //產品取消收藏
-  app.delete('/users/user_like_delete/:productId', async (req, res, next) => {
+  app.delete('/user_like_delete/:productId', async (req, res, next) => {
     console.log('------------------',req.session.member.users_id, req.params.productId)
     // 存到資料庫
-    if (!req.session.user) {
+    if (!req.session.member) {
       res.json([])
     } else {
         await pool.execute(
-        'DELETE FROM user_like WHERE user_id = ? AND product_id = ?',
-        [req.session.member.users_id, req.params.productId]
+        'DELETE FROM user_like WHERE product_id = ? AND user_id = ?',
+        [req.params.productId, req.session.member.users_id ]
       )
   
       // 回覆給前端
@@ -272,6 +269,8 @@ app.get("/users", async (req, res, next) => {
     let [data] = await pool.query("SELECT * FROM users");
     res.json(data);
 });
+
+
 //
 app.get("/news/:newsId", async (req, res, next) => {
     console.log("/news/:newsId => ", req.params.newsId);
