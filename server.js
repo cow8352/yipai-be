@@ -8,8 +8,6 @@ const { checkLogin } = require("./middlewares/authMiddleware");
 
 const express = require("express");
 const app = express();
-const uploadsPhoto = require('./routers/photoUplod');
-app.use('/uploadsPhoto', uploadsPhoto);
 
 require("dotenv").config();
 const pool = require("./utils/db");
@@ -17,28 +15,30 @@ const pool = require("./utils/db");
 // 允許跨源存取,預設是全部開放,也可以做部分限制，參考 npm cors 的文件
 const cors = require("cors");
 app.use(
-    cors({
-        // 必須把 credentails 設定成 true，一定要設定 origin (來源)
-        origin: ["http://localhost:3000"],
-        credentials: true,
-    })
-);
-// 如果要讓 express 認得 json 資料,需要加上這個中間件
-app.use(express.json());
-
-app.use(
+  cors({
+    // 必須把 credentails 設定成 true，一定要設定 origin (來源)
+    origin: ["http://localhost:3000"],
+    credentials: true,
+  })
+  );
+  // 如果要讓 express 認得 json 資料,需要加上這個中間件
+  app.use(express.json());
+  
+  app.use(
     expressSession({
-        // 告訴 express-session session 要存sessions資料夾
-        store: new FileStore({
-            path: path.join(__dirname, "..", "sessions"),
-        }),
-        secret: process.env.SESSION_SECRET,
-        // true: 即使 session 沒有改變也重新儲存一次
+      // 告訴 express-session session 要存sessions資料夾
+      store: new FileStore({
+        path: path.join(__dirname, "..", "sessions"),
+      }),
+      secret: process.env.SESSION_SECRET,
+      // true: 即使 session 沒有改變也重新儲存一次
         resave: false,
         // true: 還沒有正式初始化的 session 也真的存起來
         saveUninitialized: false,
     })
 );
+const uploadsPhoto = require('./routers/photoUplod');
+      app.use('/uploadsPhoto', uploadsPhoto);
 
 // middleware => pipeline pattern
 
@@ -298,8 +298,8 @@ app.get('/coupon', async (req, res, next) => {
 app.use((req, res, next) => {
     console.log("出現404！");
     res.status(404).send("錯誤代號404，請輸入正確的網址");
-    const cors = require("cors");
-    app.use(cors());
+    // const cors = require("cors");
+    // app.use(cors());
 });
 
 app.listen(3001, () => {

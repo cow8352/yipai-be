@@ -47,9 +47,10 @@ const uploader = multer({
   },
 });
 // /uploadsPhoto/product
-router.post("/product",checkLogin,uploader.single('photo'), async (req, res, next) => {
-    console.log("product post", req.file.filename,req.session.member.users_id);
-    let [data] = await pool.query("UPDATE users SET user_imageHead=? WHERE users_id=?", [req.file.filename,req.session.member.users_id]);
+router.post("/product/:id",uploader.single('photo'), async (req, res, next) => {
+  const id = req.params.id
+    // console.log("product post", req.file.filename,req.body.id);
+    let [data] = await pool.query("UPDATE users SET user_imageHead=? WHERE users_id=?", [req.file.filename,id]);
     res.json(data);
 });
 //================================================================
