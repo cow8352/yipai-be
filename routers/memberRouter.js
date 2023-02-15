@@ -53,11 +53,10 @@ router.post("/orders",checkLogin,async(req,res,next)=>{
 router.put("/userData", async (req, res, next) => {
   
   let data = await pool.query(
-      "UPDATE users SET users_name = ? , users_account = ? , users_email = ? ,users_phone = ? WHERE users_id = ?",
+      "UPDATE users SET users_name = ? , users_account = ? ,users_phone = ? WHERE users_id = ?",
       [
           req.body.username,
           req.body.account,
-          req.body.email,
           req.body.phone,
           // req.body.photo,//上傳檔案名稱
           req.body.usersId,
