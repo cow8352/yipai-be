@@ -86,19 +86,6 @@ app.get("/product", async (req, res, next) => {
     let [data] = await pool.query("SELECT * FROM product");
     res.json(data);
 });
-app.put("/product/:productId", async (req, res, next) => {
-    console.log("這裡是 put/product/ID", req.params.productId);
-    let [data] = await pool.query(
-        `UPDATE product SET name = ? , price = ? WHERE id = ?`,
-        [
-            req.body.name,
-            req.body.price,
-            req.body.id,
-        ]
-    );
-    console.log(req.body);
-    res.json(data);
-});
 
 
 
@@ -268,16 +255,6 @@ app.get("/artist/:artistId", async (req, res, next) => {
     );
     res.json(data);
 });
-//折價券路由
-app.get('/coupon', async (req, res, next) => {
-    console.log('這裡是 /coupon')
-  
-    let [data] = await pool.query(
-      'SELECT coupon.* FROM coupon JOIN users ON coupon.user_id = users.users_id'
-    )
-    res.json(data)
-    next()
-  })
 
 app.use((req, res, next) => {
     console.log("出現404！");
