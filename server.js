@@ -45,6 +45,22 @@ app.use(
 // 處理使用者註冊時上傳的圖片網址
 app.use('/public', express.static('./public'));
 
+
+// http://localhost:3001/users/checkusers
+app.get('/users/checkusers', async (req, res, next) => {
+  console.log('checkusers', req.session.member)
+
+  if (!req.session.member) return res.json({})
+
+  let [data] = await pool.query(
+    `SELECT * FROM users WHERE users_id = ${req.session.member.users_id}`
+  )
+  console.log(data)
+  return res.json(data[0])
+  next()
+})
+
+
 // 首頁
 app.get("/", async (req, res, next) => {
     console.log("這裡是藝拍首頁,顯示首頁資料");
