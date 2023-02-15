@@ -336,6 +336,20 @@ app.get('/userlike', async (req, res,next) => {
     
   })
 
+  //收藏資料
+app.get('/users/user_like_add/info/:productId', async (req, res, next) => {
+    // 存到資料庫
+    const productId= req.params.productId
+    if (!req.session.member.users_id) {
+      res.json([])
+    } else {
+      let result = await pool.execute(
+        'SELECT * FROM user_like WHERE product_id=? AND user_id=?',
+        [productId, req.session.member.users_id ])
+      // 回覆給前端
+      res.json(result)
+    }
+  })
 //產品加入收藏
 app.post('/users/user_like_add', async (req, res, next) => {
     // 存到資料庫
