@@ -48,6 +48,7 @@ app.use('/public', express.static('./public'));
 // 首頁
 app.get("/", async (req, res, next) => {
     console.log("這裡是藝拍首頁,顯示首頁資料");
+    console.log('---------------------51',req.session.member)
     let [data] = await pool.query(
         "SELECT * FROM users JOIN user_order ON users.users_id = user_order.user_id JOIN product ON product.id = user_order.product_id LIMIT 1"
     );
@@ -71,7 +72,7 @@ app.post("/submitOrder", async (req, res) => {
 app.get("/cart", async (req, res, next) => {
     console.log("這裡是 /cart");
     let [data] = await pool.query(
-        "SELECT * FROM product JOIN user_order ON product.id = user_order.product_id ORDER BY RAND() LIMIT 1"
+        "SELECT * FROM product JOIN user_order ON product.id = user_order.product_id "
     );
     res.json(data);
 });
@@ -87,6 +88,80 @@ app.get("/product", async (req, res, next) => {
     res.json(data);
 });
 
+//coupon
+
+app.get('/coupon', async (req, res,next) => {
+    console.log('這裡是 /coupon')
+    if(!req.session.member){
+      res.json();
+    }else{
+      let [data] = await pool.query(
+      'SELECT * FROM coupon WHERE user_id=?', [req.session.member.users_id]);
+    res.json(data);}
+    
+  })
+
+//coupon Total
+  app.get('/couponTotal', async (req, res,next) => {
+    console.log('這裡是 /couponTotal')
+    if(!req.session.member){
+        res.json();
+    }else{
+        let [data] = await pool.query(
+            'SELECT COUNT(user_id) AS total FROM coupon WHERE user_id=?', [req.session.member.users_id]);
+          res.json(data);
+    }
+  })
+
+//user like  
+app.get('/userlike', async (req, res,next) => {
+    console.log('這裡是 /userlike')
+    if(!req.session.member){
+        res.json();
+    }else{
+        let [data] = await pool.query(
+            'SELECT user_like.*, product.img_file, product.name, product.width, product.height, product.price FROM user_like JOIN product ON user_like.product_id = product.id  WHERE user_id=?', [req.session.member.users_id]);
+          res.json(data);
+    }
+  })
+
+//產品加入收藏
+app.post('/users/user_like_add', async (req, res, next) => {
+    // console.log(req.session.user.id, req.body.product_id)
+    // 存到資料庫
+    if (!req.session.user) {
+      res.json([])
+    } else {
+      let result = await pool.execute(
+        'INSERT INTO user_like ( product_id, user_id) VALUES ( ?, ?)',
+        [req.body.product_id, req.session.member.users_id ])
+  
+      console.log('加入收藏', result)
+      // 回覆給前端
+      res.json({
+        msg: '加入收藏',
+      })
+    }
+  })
+  
+  //產品取消收藏
+  app.delete('/users/user_like_delete/:productId', async (req, res, next) => {
+    console.log('------------------',req.session.member.users_id, req.params.productId)
+    // 存到資料庫
+    if (!req.session.user) {
+      res.json([])
+    } else {
+        await pool.execute(
+        'DELETE FROM user_like WHERE user_id = ? AND product_id = ?',
+        [req.session.member.users_id, req.params.productId]
+      )
+  
+      // 回覆給前端
+      res.json({
+        msg: '取消收藏',
+      })
+    }
+  })
 
 
 // const path = require('path');
@@ -157,6 +232,24 @@ app.get("/product/:productId", async (req, res, next) => {
     ]);
     res.json(data);
 });
+
+//課程收藏
+app.get('/productLike/:productId', async (req, res, next) => {
+    console.log('------------------175',req.session.member.id)
+    if(!req.session.member){
+    res.json()
+    }else{
+        let [data] = await pool.query(
+            'SELECT users_like.id, users_like.users_id ,users_like.product_id FROM users_like JOIN users ON users_like.users_id = users.users_id JOIN product ON users_like.product_id = product.id WHERE users_like.product_id = ? AND users_like.users_id = ? ',
+            [req.params.productId , req.session.member.id]
+          )
+          
+          res.json(data)
+          next()
+    }
+  })
+
+
 // 所有使用者資料
 app.get("/users", async (req, res, next) => {
     console.log("這裡是 /users");
@@ -190,7 +283,6 @@ app.use("/api/members", memberRouter);
 
 // 會員資料檢視
 app.get("/users/:usersId", async (req, res, next) => {
-    console.log("/users/:usersId => ", req.params.usersId);
     let [data] = await pool.query("SELECT * FROM users WHERE users_id=? ", [
         req.params.usersId,
     ]);

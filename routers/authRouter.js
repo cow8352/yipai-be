@@ -231,6 +231,7 @@ router.post('/Buylogin', async (req, res, next) => {
   };
   // 寫入 session
   req.session.member = retMember;
+  console.log('-----------',req.session.member)
 
   // 回覆前端
   res.json({
