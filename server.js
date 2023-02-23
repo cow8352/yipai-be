@@ -305,7 +305,7 @@ app.get('/userCoupon', async (req, res,next) => {
       res.json();
     }else{
       let [data] = await pool.query(
-      'SELECT * FROM coupon WHERE user_id=?', [req.session.member.users_id]);
+      'SELECT * FROM coupon');
     res.json(data);}
     
   })
@@ -317,7 +317,7 @@ app.get('/userCoupon', async (req, res,next) => {
         res.json();
     }else{
         let [data] = await pool.query(
-            'SELECT COUNT(user_id) AS total FROM coupon WHERE user_id=?', [req.session.member.users_id]);
+            'SELECT COUNT(user_id) AS total FROM coupon');
           res.json(data);
     }
   })
@@ -340,7 +340,7 @@ app.get('/userlike', async (req, res,next) => {
 app.get('/users/user_like_add/info/:productId', async (req, res, next) => {
     // 存到資料庫
     const productId= req.params.productId
-    if (!req.session.member.users_id) {
+    if (!req.session.member) {
       res.json([])
     } else {
       let result = await pool.execute(
@@ -362,7 +362,7 @@ app.post('/users/user_like_add', async (req, res, next) => {
   
       console.log('加入收藏', req.body.product_id)
       // 回覆給前端
-      res.json({
+      res.json({ 
         msg: '加入收藏',
       })
     }
