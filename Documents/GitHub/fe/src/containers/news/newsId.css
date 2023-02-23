@@ -1,0 +1,138 @@
+.news__text{
+    font-family: var(--font-family);
+    line-height: 30px;
+    margin-top: 10px;
+    
+}
+.news__container{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: flex-end;
+}
+.news__yipai__img{
+   width: 100vw;
+    object-fit:cover;
+}
+
+.news__yipai__img {
+    /* object-fit: 100; */
+    width:100%;
+ }
+
+.news__timericon{
+    display: flex;
+  align-items: center;
+  justify-content: center;
+    flex-wrap: wrap;
+}
+.news__share_icon{
+    width: 16px;
+    height: 17px;   
+}
+/* .place{
+    margin: 15px;
+} */
+.newsDetail_address{
+    margin:20px 0 20px 0 ;
+}
+.newsDetail_address-icon{
+    margin-right: 15px;
+}
+.newsDetail__text{
+    line-height: 1.5;
+    word-break: break-word;
+    /* font-weight: 400px; */
+    padding: 20px;
+    /* color: black; */
+    text-align: justify;
+   
+}
+/* .map__img {
+    height: 344px;
+    left: 654px;
+    top: 190px;
+    padding: 15px;
+    margin-left: 350px;
+} */
+.news__row{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 80vw;
+
+}
+/* .gradient__text{
+    padding: 15px;
+} */
+.icon,.place{
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: flex-end;
+}
+.news__collect,.news__share{
+    margin: 5px;
+}
+.news__FaHeart_icon,.news__share_icon{
+    width: 36px;
+    height: 20px;
+    margin-bottom:-5px;
+}
+
+.news__google{
+    width: 75vw; 
+}
+.news__google_LeafletMap{
+    height: 50vh;
+    width: 100%;
+    margin: auto;
+}
+
+@media screen and (max-width: 990px) {
+    .news__text{
+        width:720px ;
+        margin: auto;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .news__text{
+        width:500px ;
+        margin: auto;
+    }
+}
+
+
+    @media screen and (max-width: 550px) {
+        .news__yipai__img{
+            width: 414px;
+        }
+        .newsDetail__text{
+           width: 100vw;
+           margin: 0px; 
+        
+        }
+
+        .news__google{
+            width: 50vh;
+            height: 50vh;
+           
+        }
+    .news__fw-bold{
+        width: 100vw;
+    }
+    .news__row{
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        width: 100vw;
+        margin: 0;
+    }
+    .news__google_LeafletMap{
+        height: 50vh;
+        width: 100vw;
+        margin: auto;
+    }
+        
+    }

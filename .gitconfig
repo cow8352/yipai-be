@@ -1,0 +1,21 @@
+[user]
+	name = chen
+	email = 117623859+cow8352@users.noreply.github.com
+[difftool "sourcetree"]
+	cmd = "'' "
+[mergetool "sourcetree"]
+	cmd = "'' "
+	trustExitCode = true
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+  lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cd) %C(bold blue)<%an>%Creset' --abbrev-commit --date=iso
+	l = log --oneline --graph
+  la = log --all --oneline --decorate --graph
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
